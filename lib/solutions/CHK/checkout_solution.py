@@ -13,7 +13,7 @@ def checkout(skus):
         "A": [(5, 200), (3, 130)],
         "B": [(2, 45)],
         "B_free_with_E": {"required_sku": "E", "required_qty": 2},
-        "F_free_with_F": {"required_sku": "F", "required_qty": 2},
+        "F_free_with_F": {"required_sku": "F", "required_qty": 3},
     }
     input_dict = {"A": 0, "B": 0, "C": 0, "D": 0, "E": 0, "F": 0}
     total = 0
@@ -63,6 +63,7 @@ def checkout(skus):
             total += count * allowed_skus.get(sku, 0)
 
     return total
+
 
 
 

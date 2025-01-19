@@ -12,7 +12,7 @@ def checkout(skus):
         "H": 10,
         "I": 35,
         "J": 60,
-        "k": 80,
+        "K": 80,
         "L": 90,
         "M": 15,
         "N": 40,
@@ -81,4 +81,3 @@ def checkout(skus):
             total += count * allowed_skus[sku]
 
     return total
-

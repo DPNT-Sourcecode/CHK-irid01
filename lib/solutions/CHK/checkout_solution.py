@@ -31,6 +31,13 @@ def checkout(skus):
         if input_dict[required_sku] > 0:
             free_b = input_dict[required_sku] // required_qty
 
+    free_f = 0
+    if "F_free_with_F" in offers:
+        required_sku = offers.get("F_free_with_F").get("required_sku")
+        required_qty = offers.get("F_free_with_F").get("required_qty")
+        if input_dict[required_sku] > 0:
+            free_f = input_dict[required_sku] // required_qty
+
     for sku, count in input_dict.items():
         if sku == "B":
             chargeable_b = max(0, count - free_b)
@@ -41,6 +48,15 @@ def checkout(skus):
                     total += offer_count * offer_price
                     chargeable_b %= offer_qty
             total += chargeable_b * allowed_skus[sku]
+        elif sku == "F":
+            chargeable_f = max(0, count - free_f)
+            b_offers = sorted(offers[sku], key=lambda x: -x[0])
+            for offer_qty, offer_price in b_offers:
+                if chargeable_f >= offer_qty:
+                    offer_count = chargeable_f // offer_qty
+                    total += offer_count * offer_price
+                    chargeable_f %= offer_qty
+            total += chargeable_f * allowed_skus[sku]
         elif sku in offers and isinstance(offers[sku], list):
             sku_offers = sorted(offers[sku], key=lambda x: -x[0])
             for offer_qty, offer_price in sku_offers:
@@ -53,4 +69,5 @@ def checkout(skus):
             total += count * allowed_skus.get(sku, 0)
 
     return total
+
 

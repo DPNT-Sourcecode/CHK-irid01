@@ -50,8 +50,8 @@ def checkout(skus):
             total += chargeable_b * allowed_skus[sku]
         elif sku == "F":
             chargeable_f = max(0, count - free_f)
-            b_offers = sorted(offers[sku], key=lambda x: -x[0])
-            for offer_qty, offer_price in b_offers:
+            f_offers = sorted(offers[sku], key=lambda x: -x[0])
+            for offer_qty, offer_price in f_offers:
                 if chargeable_f >= offer_qty:
                     offer_count = chargeable_f // offer_qty
                     total += offer_count * offer_price
@@ -69,5 +69,6 @@ def checkout(skus):
             total += count * allowed_skus.get(sku, 0)
 
     return total
+
 
 

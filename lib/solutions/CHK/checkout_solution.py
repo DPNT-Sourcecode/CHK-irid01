@@ -29,6 +29,7 @@ def checkout(skus):
         "Y": 10,
         "Z": 50,
     }
+
     offers = {
         "A": [(5, 200), (3, 130)],
         "B": [(2, 45)],
@@ -43,6 +44,7 @@ def checkout(skus):
         "U": {"free_with": ("U", 1), "required_qty": 3},
         "V": [(3, 130), (2, 90)],
     }
+
     item_counts = {sku: 0 for sku in allowed_skus}
 
     for sku in skus:
@@ -61,9 +63,9 @@ def checkout(skus):
 
             if sku == free_sku:
                 total_items = count
-                chargeable_items = total // (required_qty + 1) * required_qty + (
-                    total_items % (required_qty + 1)
-                )
+                chargeable_items = (
+                    total_items // (required_qty + 1)
+                ) * required_qty + (total_items % (required_qty + 1))
                 item_counts[sku] = chargeable_items
             else:
                 free_items = count // required_qty
@@ -71,6 +73,7 @@ def checkout(skus):
                     item_counts[free_sku] = max(0, item_counts[free_sku] - free_items)
 
     for sku, count in item_counts.items():
+
         if sku in offers and isinstance(offers[sku], list):
             tiered_offers = sorted(offers[sku], key=lambda x: -x[0])
             for offer_qty, offer_price in tiered_offers:
@@ -81,5 +84,7 @@ def checkout(skus):
             total += count * allowed_skus[sku]
         else:
             total += count * allowed_skus[sku]
+
     return total
+
 

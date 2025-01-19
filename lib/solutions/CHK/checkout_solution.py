@@ -76,4 +76,3 @@ def checkout(skus):
         else:
             total += count * allowed_skus[sku]
     return total
-

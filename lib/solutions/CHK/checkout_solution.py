@@ -24,4 +24,3 @@ def checkout(skus):
             total += price * v
 
     return total
-

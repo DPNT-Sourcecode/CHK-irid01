@@ -31,7 +31,6 @@ def checkout(skus):
         "Z": 21,
     }
 
-    # Special offers
     offers = {
         "A": [(5, 200), (3, 130)],
         "B": [(2, 45)],
@@ -47,12 +46,10 @@ def checkout(skus):
         "V": [(3, 130), (2, 90)],
     }
 
-    # Group discount offers
     group_offers = [
         {"group": {"S", "T", "X", "Y", "Z"}, "required_qty": 3, "price": 45}
     ]
 
-    # Validate input and count items
     if not isinstance(skus, str):
         return -1
 
@@ -64,63 +61,64 @@ def checkout(skus):
 
     total = 0
 
-    # Process "Buy X Get Y Free" offers first
     for sku, offer in offers.items():
         if isinstance(offer, dict) and sku in item_counts:
             count = item_counts[sku]
             free_sku = offer["free_with"][0]
             required_qty = offer["required_qty"]
 
-            if sku == free_sku:  # Self-referential offers (like F and U)
+            if sku == free_sku:
                 total_items = count
                 chargeable_items = (
                     total_items // (required_qty + 1)
                 ) * required_qty + (total_items % (required_qty + 1))
                 item_counts[sku] = chargeable_items
-            else:  # Get another item free
+            else:
                 free_items = count // required_qty
                 if free_sku in item_counts:
                     item_counts[free_sku] = max(0, item_counts[free_sku] - free_items)
 
-    # Process group offers
     for group_offer in group_offers:
         group_skus = group_offer["group"]
         required_qty = group_offer["required_qty"]
         group_price = group_offer["price"]
 
-        # Sort group items by price descending to favor customer
         group_items = []
+        temp_counts = {}
+
         for sku in group_skus:
             if sku in item_counts and item_counts[sku] > 0:
                 group_items.extend([sku] * item_counts[sku])
+                temp_counts[sku] = item_counts[sku]
                 item_counts[sku] = 0
 
         group_items.sort(key=lambda x: allowed_skus[x], reverse=True)
 
-        # Apply group discounts
         groups_count = len(group_items) // required_qty
         if groups_count > 0:
             total += groups_count * group_price
 
-            # Return remaining items to item_counts
-            remaining_items = len(group_items) % required_qty
             for i in range(groups_count * required_qty, len(group_items)):
                 sku = group_items[i]
                 item_counts[sku] = item_counts.get(sku, 0) + 1
+        else:
 
-    # Process remaining items with multi-buy offers
+            for sku, count in temp_counts.items():
+                item_counts[sku] = count
+
     for sku, count in item_counts.items():
         if count > 0:
             if sku in offers and isinstance(offers[sku], list):
-                # Sort offers by quantity descending to apply largest discounts first
+
                 for offer_qty, offer_price in sorted(offers[sku], key=lambda x: -x[0]):
                     while count >= offer_qty:
                         total += offer_price
                         count -= offer_qty
-                total += count * allowed_skus[sku]  # Add remaining items at full price
+                total += count * allowed_skus[sku]
             else:
                 total += count * allowed_skus[sku]
 
     return total
+
 
 

@@ -16,9 +16,12 @@ def checkout(skus):
         if k in offers:
             offer_quant, quant_total = offers.get(k)
             remainder = v % offer_quant
-            total += (remainder * allowed_skus.get(k)) + (quant_total * (v - remainder))
+            total += (remainder * allowed_skus.get(k)) + (
+                quant_total * ((v - remainder) / offer_quant)
+            )
         else:
             price = allowed_skus.get(k)
             total += price * v
 
     return total
+

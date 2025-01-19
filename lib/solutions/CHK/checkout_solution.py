@@ -7,8 +7,8 @@ def checkout(skus):
     total = 0
 
     for letter in skus:
-        if letter.upper() in allowed_skus:
-            input_dict[letter.upper()] += 1
+        if letter in allowed_skus:
+            input_dict[letter] += 1
         else:
             return -1
 
@@ -22,6 +22,7 @@ def checkout(skus):
             total += price * v
 
     return total
+
 
 
 

@@ -41,7 +41,7 @@ def checkout(skus):
             total += chargeable_b * allowed_skus[sku]
         elif sku in offers and isinstance(offers[sku], list):
             sku_offers = sorted(offers[sku], key=lambda x: -x[0])
-            for offerqty, offer_price in sku_offers:
+            for offer_qty, offer_price in sku_offers:
                 if count >= offer_qty:
                     offer_count = count // offer_qty
                     total += offer_count * offer_price
@@ -51,4 +51,3 @@ def checkout(skus):
             total += count * allowed_skus.get(sku, 0)
 
     return total
-

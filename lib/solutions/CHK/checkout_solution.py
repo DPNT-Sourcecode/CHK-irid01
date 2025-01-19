@@ -3,13 +3,12 @@
 def checkout(skus):
     allowed_skus = {"A": 50, "B": 30, "C": 20, "D": 15}
     offers = {"A": (3, 130), "B": (2, 45)}
-    substrings = skus.split()
     input_dict = {"A": 0, "B": 0, "C": 0, "D": 0}
     total = 0
 
-    for substring in substrings:
-        if substring.upper() in allowed_skus:
-            input_dict[substring.upper()] += 1
+    for letter in skus:
+        if letter.upper() in allowed_skus:
+            input_dict[letter.upper()] += 1
         else:
             return -1
 
@@ -23,5 +22,6 @@ def checkout(skus):
             total += price * v
 
     return total
+
 
 

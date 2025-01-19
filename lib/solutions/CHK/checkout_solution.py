@@ -60,16 +60,12 @@ def checkout(skus):
             free_sku = free_offer["free_with"][0]
             required_qty = free_offer["required_qty"]
 
-            if required_sku == free_sku:
-                free_items = count // (required_qty + 1)
-                chargeable_items = count - free_items
-                total += chargeable_items * allowed_skus[sku]
-            else:
+            if free_sku in item_counts:
                 free_items = count // required_qty
-                if free_sku in item_counts:
-                    item_counts[free_sku] = max(0, item_counts[free_sku] - free_items)
-                total += count * allowed_skus[sku]
-        elif sku in offers and isinstance(offers[sku], list):
+                item_counts[free_sku] = max(0, item_counts[free_sku] - free_items)
+
+    for sku, count in item_counts.items():
+        if sku in offers and isinstance(offers[sku], list):
             tiered_offers = sorted(offers[sku], key=lambda x: -x[0])
             for offer_qty, offer_price in tiered_offers:
                 if count >= offer_qty:
@@ -79,5 +75,5 @@ def checkout(skus):
             total += count * allowed_skus[sku]
         else:
             total += count * allowed_skus[sku]
-
     return total
+
